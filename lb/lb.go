@@ -1,27 +1,31 @@
 package main
-                     4683452
+
 import (
-	"fmt"
 	"log"
-	"net/http"
-	"time"
+	"net"
 )
 
 func main() {
-	s := &http.Server{
-		Handler:        new(lbReqHandler),
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
+	listener, err := net.Listen("tcp", "")
+	if err != nil {
+		log.Fatalf("failed to listen to client %v", err)
 	}
-	log.Fatal(s.ListenAndServe())
+
+	for {
+		go acceptConnections(listener)
+
+	}
 }
 
-type lbReqHandler struct {
+func acceptConnections(listener net.Listener) {
+	conn, err := listener.Accept()
+	if err != nil {
+		log.Printf("failed to accept new connection %v", err)
+	}
 
+	req := make([]byte, 1024)
+	_, err = conn.Read(req)
+	if err != nil {
+		log.Printf("failed to read from conn %v", err)
+	}
 }
-func (h *lbReqHandler) ServeHTTP(rs http.ResponseWriter,req *http.Request){
-	fmt.Printf("%v from load balancer\n",req.URL)
-	http
-}
-
