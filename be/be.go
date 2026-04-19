@@ -19,9 +19,9 @@ func main() {
 }
 
 type ok struct {
-
 }
-func (h *ok) ServeHTTP(rs http.ResponseWriter,req *http.Request){
-	fmt.Printf("%v from load balancer\n",req.URL)
-	be.ReceiveRequests(rs,req)
+
+func (h *ok) ServeHTTP(rs http.ResponseWriter, req *http.Request) {
+	fmt.Printf("%v from load balancer\n", req.URL)
+	// be.ReceiveRequests(rs,req)
 }
