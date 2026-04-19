@@ -1,0 +1,8 @@
+# DLB — Code Ownership
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# NOTE: This project is currently in prototype phase.
+# Ownership will be expanded to team-level reviewers post-approval.
+
+# Default owner — all files
+* @AkashKanteti
