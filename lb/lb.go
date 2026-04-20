@@ -12,20 +12,21 @@ func main() {
 	}
 
 	for {
-		go acceptConnections(listener)
+		conn, err := listener.Accept()
+		if err != nil {
+			log.Printf("failed to accept new connection %v", err)
+			continue
+		}
 
+		go handleConnection(conn)
 	}
 }
 
-func acceptConnections(listener net.Listener) {
-	conn, err := listener.Accept()
-	if err != nil {
-		log.Printf("failed to accept new connection %v", err)
-	}
-
+func handleConnection(conn net.Conn) {
 	req := make([]byte, 1024)
-	_, err = conn.Read(req)
+	_, err := conn.Read(req)
 	if err != nil {
 		log.Printf("failed to read from conn %v", err)
 	}
+
 }

@@ -1,27 +1,46 @@
 package be
 
 import (
-	"fmt"
 	"log"
-	"net/http"
-	"time"
+	"net"
+
+	"github.com/AkashKanteti/load-balancer/algo"
 )
 
+type backendServers struct {
+	address []string
+	algo    algo.Algo
+}
+
 func main() {
-	s := &http.Server{
-		Addr:           ":69",
-		Handler:        new(ok),
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
+	addresses := []string{"localhost:9091", "localhost:9092", "localhost:9093", "localhost:9094"}
+
+	for _, address := range addresses {
+		listener, _ := net.Listen("tcp", address)
+
+		go handleListener(listener)
 	}
-	log.Fatal(s.ListenAndServe())
 }
 
-type ok struct {
+func handleListener(listener net.Listener) {
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			log.Printf("failed to accept new connection %v", err)
+			continue
+		}
+
+		go handleConnection(conn)
+
+	}
+
 }
 
-func (h *ok) ServeHTTP(rs http.ResponseWriter, req *http.Request) {
-	fmt.Printf("%v from load balancer\n", req.URL)
-	// be.ReceiveRequests(rs,req)
+func handleConnection(conn net.Conn) {
+	req := make([]byte, 1024)
+	_, err := conn.Read(req)
+	if err != nil {
+		log.Printf("failed to read from conn %v", err)
+	}
+
 }
