@@ -7,10 +7,10 @@ import (
 
 func main() {
 	listener, err := net.Listen("tcp", ":9090")
-	defer listener.Close()
 	if err != nil {
 		log.Fatalf("failed to listen to client %v", err)
 	}
+	defer listener.Close()
 
 	for {
 		conn, err := listener.Accept()
