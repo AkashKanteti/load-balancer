@@ -1,6 +1,7 @@
 package be
 
 import (
+	"fmt"
 	"log"
 	"net"
 
@@ -43,4 +44,5 @@ func handleConnection(conn net.Conn) {
 		log.Printf("failed to read from conn %v", err)
 	}
 
+	fmt.Printf("ok %v", req)
 }

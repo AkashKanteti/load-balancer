@@ -6,7 +6,8 @@ import (
 )
 
 func main() {
-	listener, err := net.Listen("tcp", "")
+	listener, err := net.Listen("tcp", ":9090")
+	defer listener.Close()
 	if err != nil {
 		log.Fatalf("failed to listen to client %v", err)
 	}
@@ -23,10 +24,15 @@ func main() {
 }
 
 func handleConnection(conn net.Conn) {
+	defer conn.Close()
 	req := make([]byte, 1024)
 	_, err := conn.Read(req)
 	if err != nil {
 		log.Printf("failed to read from conn %v", err)
 	}
 
+	_, err = conn.Write([]byte("ok\n"))
+	if err != nil {
+		log.Printf("failed to read from conn %v", err)
+	}
 }
