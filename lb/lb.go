@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net"
 
@@ -25,6 +26,7 @@ func main() {
 	}
 
 	selectedAlgo := flag.String("algorithm", "round-robin", "Algorithm to use for load balancing")
+	flag.Parse()
 
 	var algorithm *algo.Algorithm
 	switch *selectedAlgo {
@@ -44,12 +46,26 @@ func main() {
 	}
 }
 
-func handleConnection(conn net.Conn, algo *algo.Algorithm) {
+func handleConnection(conn net.Conn, algorithm *algo.Algorithm) {
 	defer conn.Close()
 	req := make([]byte, 1024)
 	_, err := conn.Read(req)
 	if err != nil {
 		log.Printf("failed to read from conn %v", err)
+	}
+
+	address := algorithm.Algo.NextServer()
+	fmt.Printf("server address: %s\n", address)
+
+	backendConn, err := net.Dial("tcp", address)
+	if err != nil {
+		log.Printf("failed to connect to backend %v", err)
+	}
+	defer backendConn.Close()
+
+	_, err = backendConn.Write(req)
+	if err != nil {
+		log.Printf("failed to write to backend %v", err)
 	}
 
 	_, err = conn.Write([]byte("ok\n"))

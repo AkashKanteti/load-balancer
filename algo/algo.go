@@ -1,16 +1,16 @@
 package algo
 
 type Algo interface {
-	nextServer() string
+	NextServer() string
 	name() string
 }
 
 type Algorithm struct {
-	algo Algo
+	Algo Algo
 }
 
 func NewAlgorithm(algo Algo) *Algorithm {
 	return &Algorithm{
-		algo: algo,
+		Algo: algo,
 	}
 }
